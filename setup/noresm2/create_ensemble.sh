@@ -151,6 +151,20 @@ do
     [ -e $USER_MODS_DIR/env_mach_pes.xml ] && cp -f $USER_MODS_DIR/env_mach_pes.xml . 
     [ -e $USER_MODS_DIR/env_mach_specific.xml ] && cp -f $USER_MODS_DIR/env_mach_specific.xml . 
     ./case.setup
+# ------------------------------------------------------------------
+    # Optional: Append daily soil moisture variables to user_nl_clm
+    # ------------------------------------------------------------------
+    if [ "${OUTPUT_DAILY_SOILMOIST}" = "true" ]; then
+        echo "--> Enabling daily soil moisture profile output in user_nl_clm..."
+        cat << 'EOF' >> "${CASEROOT}/user_nl_clm"
+
+! Define stream 2 (index 2) explicitly to avoid overwriting stream 1 (h0)
+hist_nhtfrq(2) = -24
+hist_mfilt(2)  = 31
+hist_fincl2    = 'SOILLIQ', 'SOILICE', 'H2OSOI'
+EOF
+    fi
+    # ------------------------------------------------------------------
     ./preview_namelists
 
     echo +++ COPY SOURCE MODS REQUIRED FOR ASSIMILATION IF ANY  
@@ -204,6 +218,21 @@ do
     [ -e $USER_MODS_DIR/env_mach_pes.xml ] && cp -f $USER_MODS_DIR/env_mach_pes.xml . 
     [ -e $USER_MODS_DIR/env_mach_specific.xml ] && cp -f $USER_MODS_DIR/env_mach_specific.xml . 
     ./case.setup
+# ------------------------------------------------------------------
+    # Optional: Append daily soil moisture variables to user_nl_clm
+    # ------------------------------------------------------------------
+    if [ "${OUTPUT_DAILY_SOILMOIST}" = "true" ]; then
+        echo "--> Enabling daily soil moisture profile output in user_nl_clm..."
+        cat << 'EOF' >> "${CASEROOT}/user_nl_clm"
+
+! Define stream 2 (index 2) explicitly to avoid overwriting stream 1 (h0)
+hist_nhtfrq(2) = -24
+hist_mfilt(2)  = 31
+hist_fincl2    = 'SOILLIQ', 'SOILICE', 'H2OSOI'
+EOF
+       
+    fi
+    # ------------------------------------------------------------------
     ./preview_namelists
 
     echo +++ DUMMY BUILD
